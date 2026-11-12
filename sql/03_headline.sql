@@ -7,14 +7,16 @@ WITH monthly AS (
     WHERE p.province = 'Canada'
     GROUP BY p.date
     HAVING COUNT(*) = (SELECT COUNT(*) FROM basket)
+),
+latest AS (SELECT MAX(date) AS d FROM monthly),
+periods AS (
+    SELECT AVG(CASE WHEN YEAR(m.date) = 2019 THEN m.basket_cost END) AS avg_2019,
+           AVG(CASE WHEN m.date > DATE_SUB(l.d, INTERVAL 12 MONTH) THEN m.basket_cost END) AS avg_recent
+    FROM monthly m CROSS JOIN latest l
 )
-SELECT
-    ROUND(b.basket_cost, 2)                          AS weekly_jan_2019,
-    ROUND(l.basket_cost, 2)                          AS weekly_latest,
-    l.date                                           AS latest_month,
-    ROUND(l.basket_cost - b.basket_cost, 2)          AS weekly_increase,
-    ROUND((l.basket_cost - b.basket_cost) * 52, 2)   AS yearly_increase,
-    ROUND(100 * (l.basket_cost / b.basket_cost - 1), 1) AS pct_increase
-FROM monthly b
-JOIN monthly l ON l.date = (SELECT MAX(date) FROM monthly)
-WHERE b.date = '2019-01-01';
+SELECT ROUND(avg_2019, 2)                      AS avg_weekly_2019,
+       ROUND(avg_recent, 2)                    AS avg_weekly_last_12m,
+       ROUND(avg_recent - avg_2019, 2)         AS weekly_increase,
+       ROUND((avg_recent - avg_2019) * 52, 2)  AS yearly_increase,
+       ROUND(100 * (avg_recent / avg_2019 - 1), 1) AS pct_increase
+FROM periods;
