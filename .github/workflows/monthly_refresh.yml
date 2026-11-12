@@ -1,0 +1,33 @@
+name: Monthly data refresh
+
+on:
+  schedule:
+    - cron: "0 14 10 * *"   # 10th of every month, 9–10 AM Toronto time
+  workflow_dispatch:         # adds a "Run workflow" button for manual runs
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install packages
+        run: pip install pandas requests
+
+      - name: Pull and clean data
+        run: python src/pull_data.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/clean/prices_clean.csv data/basket_monthly.csv
+          git diff --staged --quiet || git commit -m "Monthly data refresh $(date +'%Y-%m')"
+          git push
