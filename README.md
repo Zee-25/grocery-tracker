@@ -7,7 +7,18 @@ How much more does a Canadian family's grocery basket cost than in 2019, and whi
 ## Power BI dashboard
 Three pages: Overview, What drove the increase, and Provinces. File: `dashboard/grocery_tracker.pbix`
 
-![Power BI dashboard](images/05_dashboard.png)
+![Power BI dashboard: Overview](images/05_dashboard.png)
+
+<details>
+<summary><b>See the other two pages</b></summary>
+
+**What drove the increase:** share of the increase by item, with a product selector for price history
+![What drove the increase](images/06_dashboard_drivers.png)
+
+**Provinces:** basket increase by province vs. the national average
+![Provinces](images/07_dashboard_provinces.png)
+
+</details>
 
 ## Key findings
 - **The basket rose 32.9% since 2019.** A family of four's average weekly staples cost went from **$83.91 in 2019** to **$111.54 over the last 12 months (Oct 2025 to Sep 2026)**, about **$1,437 more per year** for the same groceries.
