@@ -82,8 +82,8 @@ Python (Pandas, Matplotlib, SciPy), MySQL, SQL (CTEs, window functions), Power B
 - Package-size changes (shrinkflation) are not captured.
 - Basket quantities are estimates.
 
-## Next steps
-- Automated monthly data refresh with GitHub Actions
+## Automation
+A GitHub Actions workflow (`.github/workflows/monthly_refresh.yml`) runs `src/pull_data.py` on the 10th of every month. It downloads the latest StatCan data, runs quality checks, and commits updated `prices_clean.csv` and `basket_monthly.csv` files. The run fails, and GitHub sends an email alert, if any basket item is missing from the newest month.
 
 ## References
 - Statistics Canada, Table 18-10-0245-01: https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810024501
