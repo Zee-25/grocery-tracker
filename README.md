@@ -4,6 +4,11 @@ How much more does a Canadian family's grocery basket cost than in 2019, and whi
 
 ![Basket cost over time](images/01_basket_trend.png)
 
+## Power BI dashboard
+Three pages: Overview, What drove the increase, and Provinces. File: `dashboard/grocery_tracker.pbix`
+
+![Power BI dashboard](images/05_dashboard.png)
+
 ## Key findings
 - **The basket rose 32.9% since 2019.** A family of four's average weekly staples cost went from **$83.91 in 2019** to **$111.54 over the last 12 months (Oct 2025 to Sep 2026)**, about **$1,437 more per year** for the same groceries.
 - **Ground beef was the biggest driver.** Its average price rose 74% ($9.22 → $16.08/kg) and it accounts for **25% of the total increase**, consistent with the beef price surge noted in Canada's Food Price Report 2026.
@@ -40,12 +45,14 @@ How much more does a Canadian family's grocery basket cost than in 2019, and whi
 
 **Statistical test:** a one-sided Welch t-test and Mann-Whitney U test compare month-over-month price changes in 2022–23 against the latest 12 months. The test was defined before running it.
 
+**Dashboard:** Power BI star schema with `prices` as the fact table and `basket` and `Date` as dimensions. DAX measures calculate basket cost, 12-month averages, year-over-year change (time intelligence) and each item's share of the increase.
+
 **Benchmark:** results are compared against Canada's Food Price Report 2026 (Dalhousie University), which forecasts food prices rising 4–6% in 2026.
 
 ## Data quality checks
 - All 15 basket items have a price in every month from 2017 to 2026 nationally (items_priced = 15 for all months)
 - The item-level breakdown reconciles exactly to the total basket increase ($27.63)
-- SQL and Python produce identical results (basket +32.9%, weekly increase $27.63)
+- SQL, Python and Power BI produce identical results (basket +32.9%, weekly increase $27.63)
 - No zero, negative or duplicate prices after cleaning
 - **Seasonality:** several produce items swing strongly by season (tomatoes peak in winter, potatoes bottom out at harvest). An early version compared January 2019 with September 2026, which made potatoes and tomatoes appear ~20% cheaper and understated the total increase (29.5%). Switching to 12-month averages fixed this.
 - **Province coverage:** Newfoundland and Labrador is excluded because StatCan doesn't price "Milk, 4 litres" there. Whitehorse (Yukon) and Yellowknife (NWT) are excluded because StatCan has no 2019 prices for them and fresh meat and produce are still not priced. Nunavut is not covered by this table, so northern food costs are not represented.
@@ -54,8 +61,9 @@ How much more does a Canadian family's grocery basket cost than in 2019, and whi
 - `notebooks/01_explore.ipynb`: data pull, exploration, cleaning and basket definition
 - `notebooks/02_analysis.ipynb`: charts, statistical test and province comparison
 - `sql/`: basket cost, year-over-year change, headline and item driver queries (MySQL)
+- `dashboard/grocery_tracker.pbix`: 3-page Power BI dashboard
 - `data/`: cleaned data and basket definition
-- `images/`: charts used in this README
+- `images/`: charts and dashboard screenshot used in this README
 
 ## How to run
 1. Install Python 3.13 and create a virtual environment: `py -3.13 -m venv .venv`
@@ -63,9 +71,10 @@ How much more does a Canadian family's grocery basket cost than in 2019, and whi
 3. Run `notebooks/01_explore.ipynb` to download and clean the data
 4. Run `notebooks/02_analysis.ipynb` to reproduce the charts and findings
 5. Optional: load the data into MySQL and run the queries in `sql/`
+6. Optional: open `dashboard/grocery_tracker.pbix` in Power BI Desktop and click **Refresh**
 
 ## Tools
-Python (Pandas, Matplotlib, SciPy), MySQL, SQL (CTEs, window functions), Git
+Python (Pandas, Matplotlib, SciPy), MySQL, SQL (CTEs, window functions), Power BI (DAX, star schema), Git
 
 ## Limitations
 - The basket covers staples only, so its cost is lower than total family food spending.
@@ -74,7 +83,6 @@ Python (Pandas, Matplotlib, SciPy), MySQL, SQL (CTEs, window functions), Git
 - Basket quantities are estimates.
 
 ## Next steps
-- Power BI dashboard
 - Automated monthly data refresh with GitHub Actions
 
 ## References
